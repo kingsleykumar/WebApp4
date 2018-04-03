@@ -1,0 +1,17 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+src\main\java\com\sb\services\utils\Constants.java
+src\main\java\com\sb\services\utils\CryptoUtils.java
+src\main\java\com\sb\services\utils\MailUtil.java
+src\main\java\com\sb\services\utils\BCrypt.java
