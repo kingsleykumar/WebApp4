@@ -64,6 +64,26 @@ public class Constants {
 
     //SMTP Mail Settings.
 
+
+    public static final String SALT = "";
+
+    public static final String PW_RESET_STATUS_EMAIL_LINK_SENT = "";
+    public static final String PW_RESET_STATUS_HASH_VERIFIED = "";
+    public static final String PW_RESET_STATUS_PW_CHANGED = "";
+
+    public static final String IS_RESET_HASH_VERIFIED = "";
+
+    public static final String RESET_PASSWORD = "";
+    public static final String ACTIVATION = "";
+
+    public static final String TX_KEY = "";
+    public static final String CATEGORY_KEY = "";
+    public static final String BUDGET_KEY = "";
+    public static final String SIGN_UP_KEY = "";
+    public static final String MONGO_DB_NAME = "";
+    public static final String MONGO_UN = "";
+    public static final char[] MONGO_PW = "".toCharArray();
+
     public static final String BUDGET_ID = "budget";
     public static final String BUDGET_DISPLAY_NAME = "Budget";
 
@@ -133,7 +153,7 @@ public class Constants {
         return list;
     }
 
- public static List<SelectionItem> getSummaryTableExpandStateList() {
+    public static List<SelectionItem> getSummaryTableExpandStateList() {
 
         List<SelectionItem> list = new ArrayList<>();
 

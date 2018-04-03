@@ -14,4 +14,17 @@ import java.util.Properties;
  */
 public class MailUtil {
 
+    public static void sendResetPasswordLink(String id,
+                                             String email,
+                                             String hash) throws javax.mail.MessagingException {
+
+    }
+
+    public static void sendEmailToSupport(String name,
+                                          String id,
+                                          String email,
+                                          String content) throws javax.mail.MessagingException {
+
+
+    }
 }
