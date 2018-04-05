@@ -3,6 +3,7 @@ package com.sb.controllers;
 import com.sb.commands.BudgetCommand;
 import com.sb.services.BudgetService;
 import com.sb.services.CategoryService;
+import com.sb.services.containers.ResultMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -133,10 +134,34 @@ public class BudgetControllerTest {
     }
 
     @Test
-    public void handlePostFromBudgetUpdatePage() {
+    public void handlePostFromBudgetUpdatePage() throws Exception {
+
+        //given
+        when(budgetService.updateBudget(any(), any())).thenReturn(Optional.empty());
+
+        //when
+        mockMvc.perform(post("/budget/March 2018/edit"))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(view().name("redirect:/budget/list"));
+
+        //then
+        verify(budgetService, times(1)).updateBudget(any(), any());
     }
 
     @Test
-    public void deleteBudget() {
+    public void deleteBudget() throws Exception {
+
+        //given
+        when(budgetService.deleteBudget(anyString(), any()))
+                .thenReturn(Optional.of(new ResultMessage(false, "Some Message")));
+
+        //when
+        mockMvc.perform(get("/budget/March 2018/delete"))
+               .andExpect(status().is3xxRedirection())
+               .andExpect(view().name("redirect:/budget/list"))
+               .andExpect(flash().attributeExists("message"));
+
+        //then
+        verify(budgetService, times(1)).deleteBudget(anyString(), any());
     }
 }
