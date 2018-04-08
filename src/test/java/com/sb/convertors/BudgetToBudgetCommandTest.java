@@ -1,8 +1,8 @@
 package com.sb.convertors;
 
 import com.sb.commands.BudgetCommand;
-import com.sb.commands.CategoryBudgetCommand;
 import com.sb.domain.Budget;
+import com.sb.domain.CategoryBudget;
 import com.sb.services.utils.CryptoException;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import static com.sb.services.utils.CommonUtils.getDate;
 import static com.sb.services.utils.Constants.BUDGET_KEY;
@@ -22,11 +21,10 @@ import static com.sb.services.utils.Constants.TX_TYPE_EXPENSE;
 import static com.sb.services.utils.CryptoUtils.getEncryptedDataFromOriginal;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
-public class BudgetCommandToBudgetTest {
+public class BudgetToBudgetCommandTest {
 
     private ServletRequestAttributes attrs;
 
@@ -36,55 +34,48 @@ public class BudgetCommandToBudgetTest {
     @Mock
     private MockHttpServletRequest servletRequest;
 
-    private BudgetCommandToBudget converter;
+    private BudgetToBudgetCommand converter;
 
     @Before
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
 
-//        servletRequest.setSession(session);
-
         attrs = new ServletRequestAttributes(servletRequest);
 
         RequestContextHolder.setRequestAttributes(attrs);
 
-        converter = new BudgetCommandToBudget();
+        converter = new BudgetToBudgetCommand();
     }
 
     @Test
     public void convert() throws CryptoException {
 
         //given
-
         when(attrs.getRequest().getSession(anyBoolean())).thenReturn(session);
         when(session.getAttribute("dateFormatJava")).thenReturn("dd/MM/yyyy");
 
-        BudgetCommand budgetCommand = new BudgetCommand();
-        budgetCommand.setName("March 2018");
-        budgetCommand.setAmount("2000");
-        budgetCommand.setFrom("01/03/2018");
-        budgetCommand.setTo("31/03/2018");
-        CategoryBudgetCommand categoryBudgetCommand = new CategoryBudgetCommand();
-        categoryBudgetCommand.setName("Food");
-        categoryBudgetCommand.setAmount("250");
-        categoryBudgetCommand.setType(TX_TYPE_EXPENSE);
-        budgetCommand.setCategoryBudgets(Arrays.asList(categoryBudgetCommand));
-
-        Date fromDate = getDate("01/03/2018", ofPattern("dd/MM/yyyy"));
-        Date toDate = getDate("31/03/2018", ofPattern("dd/MM/yyyy"));
+        Budget budget = new Budget();
+        budget.setName(getEncryptedDataFromOriginal(BUDGET_KEY, "March 2018"));
+        budget.setAmount(getEncryptedDataFromOriginal(BUDGET_KEY, "2000"));
+        budget.setFrom(getDate("01/03/2018", ofPattern("dd/MM/yyyy")));
+        budget.setTo(getDate("31/03/2018", ofPattern("dd/MM/yyyy")));
+        CategoryBudget categoryBudget = new CategoryBudget();
+        categoryBudget.setType(TX_TYPE_EXPENSE);
+        categoryBudget.setAmount(getEncryptedDataFromOriginal(BUDGET_KEY, "250"));
+        categoryBudget.setName(getEncryptedDataFromOriginal(BUDGET_KEY, "Food"));
+        budget.setCategorybudgets(Arrays.asList(categoryBudget));
 
         //when
-        Budget budget = converter.convert(budgetCommand);
+        BudgetCommand budgetCommand = converter.convert(budget);
 
         //then
-        assertNotNull(budget);
-        assertEquals(getEncryptedDataFromOriginal(BUDGET_KEY, budgetCommand.getName()), budget.getName());
-        assertEquals(getEncryptedDataFromOriginal(BUDGET_KEY, budgetCommand.getAmount()), budget.getAmount());
-        assertEquals(fromDate, budget.getFrom());
-        assertEquals(toDate, budget.getTo());
-        assertEquals(1, budget.getCategorybudgets().size());
-        assertEquals(getEncryptedDataFromOriginal(BUDGET_KEY, categoryBudgetCommand.getName()),
-                     budget.getCategorybudgets().get(0).getName());
+        assertEquals("March 2018", budgetCommand.getName());
+        assertEquals("2000", budgetCommand.getAmount());
+        assertEquals("01/03/2018", budgetCommand.getFrom());
+        assertEquals("31/03/2018", budgetCommand.getTo());
+        assertEquals(1, budgetCommand.getCategoryBudgets().size());
+        assertEquals("Food", budgetCommand.getCategoryBudgets().get(0).getName());
+        assertEquals("250", budgetCommand.getCategoryBudgets().get(0).getAmount());
     }
 }
