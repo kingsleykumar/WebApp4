@@ -154,4 +154,12 @@ public class UserServiceImpl implements UserService {
         return new ResultMessage(false,
                                  "Unable to send your message. Please email to support@spendbook.net for assistance.");
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        return optionalUser;
+    }
 }

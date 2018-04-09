@@ -3,9 +3,9 @@ package com.sb.controllers;
 import com.google.gson.Gson;
 import com.sb.commands.BudgetCommand;
 import com.sb.domain.User;
-import com.sb.repositories.UserRepository;
 import com.sb.services.BudgetService;
 import com.sb.services.SummaryService;
+import com.sb.services.UserService;
 import com.sb.services.calculation.ResultNode;
 import com.sb.services.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -28,15 +28,15 @@ import java.util.Optional;
 @Controller
 public class SummaryController extends ControllerAbstract {
 
-    private UserRepository userRepository;
+    private UserService userService;
     private SummaryService summaryService;
     private BudgetService budgetService;
 
-    public SummaryController(UserRepository userRepository,
+    public SummaryController(UserService userService,
                              SummaryService summaryService,
                              BudgetService budgetService) {
 
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.summaryService = summaryService;
         this.budgetService = budgetService;
     }
@@ -53,7 +53,7 @@ public class SummaryController extends ControllerAbstract {
 
         String userName = String.valueOf(httpSession.getAttribute("username"));
 
-        Optional<User> userOptional = userRepository.findByUsername(userName);
+        Optional<User> userOptional = userService.findByUsername(userName);
 
         User user = userOptional.orElse(new User());
 

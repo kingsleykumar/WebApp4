@@ -3,8 +3,8 @@ package com.sb.controllers;
 import com.sb.commands.PreferencesCommand;
 import com.sb.commands.SignUpCommand;
 import com.sb.domain.User;
-import com.sb.repositories.UserRepository;
 import com.sb.services.AccountManagementService;
+import com.sb.services.UserService;
 import com.sb.services.containers.ResultMessage;
 import com.sb.services.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +31,12 @@ import java.util.Optional;
 public class AccountManagementController extends ControllerAbstract {
 
     private AccountManagementService accountManagementService;
-    private UserRepository userRepository;
+    private UserService userService;
 
     public AccountManagementController(AccountManagementService accountManagementService,
-                                       UserRepository userRepository) {
+                                       UserService userService) {
         this.accountManagementService = accountManagementService;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/signup")
@@ -152,7 +152,7 @@ public class AccountManagementController extends ControllerAbstract {
 
         String userName = String.valueOf(httpSession.getAttribute("username"));
 
-        Optional<User> userOptional = userRepository.findByUsername(userName);
+        Optional<User> userOptional = userService.findByUsername(userName);
 
         User user = userOptional.orElse(new User());
 
